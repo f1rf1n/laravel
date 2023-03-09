@@ -1,0 +1,22 @@
+name: bootlaravel
+recipe: laravel
+config:
+  webroot: public
+services:
+  appserver:
+    type: php:8.1
+    # type: php:7.4
+    xdebug: false
+  mailhog:
+    type: mailhog
+    hogfrom:
+      - appserver
+  pma:
+    type: phpmyadmin
+    hosts:
+      - database
+proxy:
+  mailhog:
+    - mailhog.lndo.site
+  pma:
+    - pma.lndo.site
