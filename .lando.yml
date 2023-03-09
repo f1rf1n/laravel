@@ -7,6 +7,11 @@ services:
     type: php:8.1
     # type: php:7.4
     xdebug: false
+    build_as_root:
+      # Note that you will want to use the script for the major version of node you want to install
+      # See: https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
+      - curl -sL https://deb.nodesource.com/setup_12.x | bash -
+      - apt-get install -y nodejs
   mailhog:
     type: mailhog
     hogfrom:
@@ -20,3 +25,18 @@ proxy:
     - mailhog.lndo.site
   pma:
     - pma.lndo.site
+tooling:
+  node:
+    service: appserver
+  npm:
+    service: appserver 
+  xdebug-on:
+    service: appserver
+    description: Enable xdebug for Apache.
+    cmd: rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && docker-php-ext-enable xdebug && /etc/init.d/apache2 reload && echo "Xdebug enabled"
+    user: root
+  xdebug-off:
+    service: appserver
+    description: Disable xdebug for Apache.
+    cmd: rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && /etc/init.d/apache2 reload && echo "Xdebug disabled"
+    user: root       
